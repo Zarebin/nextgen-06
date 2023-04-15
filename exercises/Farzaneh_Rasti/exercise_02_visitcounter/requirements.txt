@@ -1,0 +1,4 @@
+redis==4.5.4
+Django==4.2
+user-agents
+django-user-agents
