@@ -1,0 +1,8 @@
+version: '3'
+services:
+  redis-server:
+    image: 'redis'
+  web-client:
+    build: .
+    ports:
+      - '4000:8080'
