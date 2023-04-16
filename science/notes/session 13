@@ -1,0 +1,32 @@
+## This is notes for session 24 farvardin
+Date: 1402-01-24
+
+# d2l - chapter 4 - NN for classification
+@soroushheidary99
+
+
+# Reviewd: 
+## section 4.1 - 4.4.4
+
+# Questions:
+## What's the objectives of softmax?
+transforming the input to contain all non-negative values that add up to 1
+
+## Why the vectorization?
+to save computational resources
+
+## Why the softmax output is factorized?
+the data samples are independant of eachother thus we can factorize them and maximize the product as our objective function
+
+## How does information theory yields the entropy function ?
+One of the fundamental theorems of information theory states that in order to encode data drawn randomly from the distribution 
+P, we need at least H[P] “nats” to encode it, one nat is \frac{1}{\log(2)} \approx 1.44
+ 
+## What does DataLoader do in pytorch library?
+it prepares the data to be yielded batch by batch upon calls, it help not having all the data in ram
+
+## What is a decorator and how it was used in Chapter 4
+a decoder is used to alter another object which gets wrapped in it, it was used in chapter 4 to add functions to our created class using setattr keywork in python
+
+## What was the use of configure_optimizers in d2l
+it was used to set a desired optimizer from pytorch.optim, it was already written in the base class using SGD but upon calling it we can change the optimizer
