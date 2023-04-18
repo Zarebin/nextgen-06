@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "express": "*",
+    "redis": "2.8.0",
+    "useragent": "*",
+    "request": "*",
+    "yamlparser": "*"
+    
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
