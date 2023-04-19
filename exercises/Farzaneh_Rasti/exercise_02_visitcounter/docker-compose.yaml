@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  redis_service:
+    image: redis:4-alpine
+  app:
+   container_name: visitcounter
+   build: .
+   ports:
+    - '8000:8000'
+   depends_on:
+    - redis_service
+   volumes:
+    - .:/home/app/visitsapp/
