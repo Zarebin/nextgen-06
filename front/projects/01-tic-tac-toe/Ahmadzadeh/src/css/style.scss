@@ -1,0 +1,63 @@
+body{
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+}
+
+#board{
+    &[gameActivity = "inactive"]{
+        .cell{
+            color: gray;
+        }
+    }
+}
+
+.row{
+    display: flex;
+    flex-direction: row;
+}
+
+.cell{
+    &[border*="Top"]{
+        border-top: 3px solid white;
+    }
+    &[border*="Bottom"]{
+        border-bottom: 3px solid white;
+    }
+    &[border*="Right"]{
+        border-right: 3px solid white;
+    }
+    &[border*="Left"]{
+        border-left: 3px solid white;
+    }
+    &[winnedCell]{
+        color: goldenrod;
+        animation: winningAnnimation 0.5s 2;
+    }
+    width: 100px;
+    height: 100px;
+    font-family: cursive;
+    font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameStatus{
+    font-family: monospace;
+    margin-top: 8%;
+}
+
+@keyframes winningAnnimation{
+    25% {
+        font-size: 2cm;
+    }
+    50% {
+        visibility: hidden;
+    }
+    100% {
+        visibility: visible;
+    }
+}
