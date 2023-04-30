@@ -31,7 +31,6 @@ function checkWinningInRow(currentPlayedCell){
         for(let i = 0; i < boardSize; i++){
             let element = document.getElementById((boardSize * row + i).toString());
             element.setAttribute("winnedCell", "true");
-            console.log(element.innerHTML);
         }
     }
     return winned;
@@ -120,7 +119,6 @@ function changePlayer(){
 }
 
 function handleCellClick(event){
-    console.log("first");
     let clickedCell = event.target;
     let cellIndex = parseInt(clickedCell.getAttribute("id"));
     if (gameState[cellIndex] === "" && active){
