@@ -1,6 +1,4 @@
-import _ from 'lodash';
 import "./css/style.scss";
-//require("./css/style.scss");
 
 var turn = "X";
 var active = true;
@@ -52,7 +50,6 @@ function checkWinningInColumn(currentPlayedCell){
         for(let i = 0; i < boardSize; i++){
             let element = document.getElementById((boardSize * i + column).toString());
             element.setAttribute("winnedCell", "true");
-            console.log(element.innerHTML);
         }
     }
     return winned;
@@ -72,7 +69,6 @@ function checkFirstDiagonalWinning(currentPlayedCell){
             for(let i = 0; i < boardSize; i++){
                 let element = document.getElementById((boardSize * i + i).toString());
                 element.setAttribute("winnedCell", "true");
-                console.log(element.innerHTML);
             }
         }
         return winned;
@@ -92,7 +88,6 @@ function checkSecondDiagonalWinning(currentPlayedCell){
             for(let i = 0; i < boardSize; i++){
                 let element = document.getElementById((boardSize * i + (boardSize - i - 1)).toString());
                 element.setAttribute("winnedCell", "true");
-                console.log(element.innerHTML);
             }
         }
         return winned;
@@ -125,6 +120,7 @@ function changePlayer(){
 }
 
 function handleCellClick(event){
+    console.log("first");
     let clickedCell = event.target;
     let cellIndex = parseInt(clickedCell.getAttribute("id"));
     if (gameState[cellIndex] === "" && active){
@@ -134,17 +130,21 @@ function handleCellClick(event){
     }
 }
 
+function setCellBorders(row,indexInRow, cellElement){
+    row != 0 ? cellElement.setAttribute("border", "Top") : cellElement.setAttribute("border", "");
+    row != boardSize - 1 ? cellElement.setAttribute("border", cellElement.getAttribute("border") + "Bottom"): cellElement.setAttribute("border", cellElement.getAttribute("border")) ;
+    indexInRow != 0 ? cellElement.setAttribute("border", cellElement.getAttribute("border") + "Left"): cellElement.setAttribute("border", cellElement.getAttribute("border")) ;
+    indexInRow != boardSize - 1 ? cellElement.setAttribute("border", cellElement.getAttribute("border") + "Right"): cellElement.setAttribute("border", cellElement.getAttribute("border")) ;
+}
+
 function createRow(row){
     const rowElement = document.createElement("div");
-    rowElement.setAttribute("class", "row");
+    rowElement.setAttribute("class", "board__row");
     for(let i = 0; i < boardSize; i++){
         const cellElement = document.createElement("div");
-        cellElement.setAttribute("class", "cell");
+        cellElement.setAttribute("class", "board__row__cell");
         cellElement.setAttribute("id", (boardSize * row + i).toString());
-        row != 0 ? cellElement.setAttribute("border", "Top") : cellElement.setAttribute("border", "");
-        row != boardSize - 1 ? cellElement.setAttribute("border", cellElement.getAttribute("border") + "Bottom"): cellElement.setAttribute("border", cellElement.getAttribute("border")) ;
-        i != 0 ? cellElement.setAttribute("border", cellElement.getAttribute("border") + "Left"): cellElement.setAttribute("border", cellElement.getAttribute("border")) ;
-        i != boardSize - 1 ? cellElement.setAttribute("border", cellElement.getAttribute("border") + "Right"): cellElement.setAttribute("border", cellElement.getAttribute("border")) ;
+        setCellBorders(row, i, cellElement);
         rowElement.appendChild(cellElement);
     }
     return rowElement;
@@ -160,7 +160,7 @@ function createBoard(){
 createBoard();
 document.getElementById("gameStatus").innerHTML = "It's X's turn.";
 
-var cells = document.getElementsByClassName("cell");
+var cells = document.getElementsByClassName("board__row__cell");
 Array.prototype.forEach.call(cells, function(cell) {
     cell.addEventListener('click', handleCellClick);
 });
