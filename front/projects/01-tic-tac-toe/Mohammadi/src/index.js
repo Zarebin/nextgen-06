@@ -1,8 +1,8 @@
 import "./style/scss/style.scss";
+import axios from "axios";
 const mask = document.querySelector(".mask");
 const container = document.querySelector(".container");
 const resetBtn = document.querySelector(".resetBtn");
-
 //Game Data
 let clickCounts = 0;
 let lastClickedIsBlue = false;
@@ -11,6 +11,7 @@ let lastClickedIsBlue = false;
 const onClick = (e) => {
   let element = e.target;
   let id = element.getAttribute("data-id");
+
   if (clickCounts === 9) {
     finishGame();
     return;
@@ -95,20 +96,33 @@ const finishGame = (
 };
 
 // Init Game Function
+
+const getSize = () => {
+  axios
+    .get("http://localhost:3000/size")
+    .then((res) => {
+      let borderSize = res.data.borderSize;
+      if (borderSize >= 2) {
+        for (let index = 0; index < Math.pow(borderSize, 2); index++) {
+          let box = document.createElement("div");
+          box.className = "box";
+          box.innerHTML = index + 1;
+          box.setAttribute("data-id", index + 1);
+          box.addEventListener("click", onClick);
+          container.appendChild(box);
+        }
+      }
+    })
+    .catch((err) => console.log(err));
+};
+// http://reqres.in/api/users
 const initGame = () => {
   lastClickedIsBlue = false;
   clickCounts = 0;
   mask.innerHTML = "";
   container.innerHTML = "";
   mask.classList.remove("is-show");
-  for (let index = 0; index < 9; index++) {
-    let box = document.createElement("div");
-    box.className = "box";
-    box.innerHTML = index + 1;
-    box.setAttribute("data-id", index + 1);
-    box.addEventListener("click", onClick);
-    container.appendChild(box);
-  }
+  getSize();
 };
 
 //Reset Game
