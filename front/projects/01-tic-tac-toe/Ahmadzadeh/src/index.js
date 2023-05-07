@@ -1,9 +1,10 @@
+import axios from 'axios';
 import "./css/style.scss";
 
-var turn = "X";
-var active = true;
-const boardSize = 3;
-var gameState = Array(boardSize * boardSize).fill("");
+let turn = "X";
+let active = true;
+let boardSize;
+let gameState;
 
 function updateGameStatus(status){
     if(status === "win"){
@@ -155,10 +156,24 @@ function createBoard(){
     }
 }
 
-createBoard();
-document.getElementById("gameStatus").innerHTML = "It's X's turn.";
+async function getBoardSize(){
+    const config = {
+        method: "get",
+        url: "http//localhost:3000"
+    };
+    let res = await axios(config);
+    boardSize = parseInt(res.data["size"]);
+}
 
-var cells = document.getElementsByClassName("board__row__cell");
-Array.prototype.forEach.call(cells, function(cell) {
-    cell.addEventListener('click', handleCellClick);
-});
+async function setupGame(){
+    await getBoardSize();
+    createBoard();
+    document.getElementById("gameStatus").innerHTML = "It's X's turn.";
+    gameState = Array(boardSize * boardSize).fill("")
+    let cells = document.getElementsByClassName("board__row__cell");
+    Array.prototype.forEach.call(cells, function(cell) {
+        cell.addEventListener('click', handleCellClick);
+    });
+}
+
+setupGame();
