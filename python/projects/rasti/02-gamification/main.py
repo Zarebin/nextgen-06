@@ -1,3 +1,6 @@
+import logging
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO, filename='./main.log')
+
 import os
 import json
 from collections import defaultdict
@@ -16,46 +19,43 @@ levels = [{14: 1, 7: 1},
 class User:
     def __init__(self, user_id):
         self.user_id = user_id
-        self.user_actions = defaultdict(int)
+        self.user_actions = [defaultdict(int)]
         self.passed_levels = 0
+
+    def is_action_valid(self, action):
+        return (self.passed_levels <  5) and (action in levels[self.passed_levels])
+    
+    def is_level_passed(self):
+        for key, value in levels[self.passed_levels].items():
+            if self.user_actions[-1][key] < value:
+                return False
+        return True
+
+    def check_new_action(self, action):
+        if self.is_action_valid(action):
+            max_action_count = levels[self.passed_levels][action]
+            if self.user_actions[-1][action] < max_action_count:
+                self.user_actions[-1][action] += 1
+                if self.is_level_passed():
+                    self.passed_levels += 1
+                    self.user_actions.append(defaultdict(int))
+                    return f"level {self.passed_levels} passed"
+                else:
+                    return "action accepted"
+            else:
+                return "action discarded"
+        else:
+            return "not valid"
 
     def get_passed_levels(self):
         return self.passed_levels
 
-    def get_user_action_count(self, action):
-        return self.user_actions[action]
-
-    def incr_user_action(self, action):
-        self.user_actions[action] += 1
-        return self.user_actions[action]
-
-    def incr_passed_levels(self):
-        self.passed_levels += 1
-
-
-def is_level_passed(user, level):
-    """
-    Parameters
-    ----------
-    user : User object
-        user id
-    level : int
-        level number to check
-
-    Returns
-    -------
-    True if user has done actions related to level else False.
-
-    """
-    for key, value in levels[level-1].items():
-        if user.get_user_action_count(key) < value:
-            return False
-    return True
+    def get_user_action_count(self):
+        return self.user_actions
 
 
 user_instances = {}
 discarded_events = []
-forth_level_users, fifth_level_users = [], []
 
 # -----------------------------------------------
 events_sample = [
@@ -90,39 +90,39 @@ events_sample = [
                  {'user': 'a', 'action_id': 56},
                  {'user': 'a', 'action_id': 25},
                  {'user': 'a', 'action_id': 7}, 
-                 {'user': 'a', 'action_id': 13},]
+                 {'user': 'a', 'action_id': 13},
+    {'user': 'a', 'action_id': 37},
+    {'user': 'a', 'action_id': 43},
+    {'user': 'a', 'action_id': 6},
+    {'user': 'a', 'action_id': 37},]
 
 for i, event in enumerate(events_sample):
     event['time'] = i
 # -----------------------------------------------
 
 #events_sample = events[:100]
-
-for i, event in enumerate(events_sample):
+winners = {4: [], 5: []}
+for i, event in enumerate(events):
     action = event['action_id']
     user = event['user']
+    #print(action, end='\t')
 
     if user not in user_instances:
         user_instances[user] = User(user)
 
-    level_check = user_instances[user].get_passed_levels()
-    print(i+1, f'- passed levels: {level_check}\n\tactions: {action}')
-    if level_check < 5 and action in levels[level_check]:
-        action_count = levels[level_check][action]
-        if user_instances[user].get_user_action_count(action) < action_count:
-            action_count = user_instances[user].incr_user_action(action)
-            if is_level_passed(user_instances[user], level_check+1):
-                user_instances[user].incr_passed_levels()
-                if level_check+1 == 4:
-                    forth_level_users.append(user)
-                elif level_check+1 == 5:
-                    fifth_level_users.append(user)
-    else:
-        #discard action
+    action_result = user_instances[user].check_new_action(action)
+    if action_result == "level 4 passed":
+        winners[4].append(user)
+    elif action_result == "level 5 passed":
+        winners[5].append(user)
+    elif action_result in ["not valid", "action discarded"]:
         discarded_events.append(event)
 
-print(f'users who has passed forth level: {forth_level_users}')
-print(f'users who has passed fifth level: {fifth_level_users}\n')
+    logging.info(f"user: {user}, action: {action}, result: {action_result}")
+    #print(action_result)
+
+print("winners: ", winners)
+
 # ----------DEBUG----------------------
 users_actions = defaultdict(list)
 for i, event in enumerate(events):
