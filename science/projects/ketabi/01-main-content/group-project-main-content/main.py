@@ -1,17 +1,14 @@
-import parser 
-import Features from features
-import Model from model
+from page_parser import * 
+from features import *
+from model import *
 
-
+base_path = './project-dp-trend-description/'
 
 model = Model()
-pages = read_pages_from_csv()
+parser = PageParser()
 
-for page in pages: 
-    parsed_page = parser(page)
-
-    extractor = Features(parsed_page)
-    X = extractor.get_feature_vectors()
-
-    model.predict(X)
+parsed_pages = parser.parse_batch(path=base_path)
+extractor = Features(parsed_pages)
+X = extractor.get_feature_vectors()
+model.predict(X)
     
