@@ -1,5 +1,6 @@
 from typing import *
 import numpy as np 
+from scipy.stats import zscore
 
 class Features():
     '''
@@ -7,7 +8,7 @@ class Features():
     '''
 
 
-    def __init__(self, html_object, n_negative_sample = 100): 
+    def __init__(self, html_object, n_negative_sample = 10): 
         self.html_object = html_object
         self.og_desc_text = self.find_og_desc_text(html_object)
         self.n_negative_sample = n_negative_sample
@@ -24,17 +25,17 @@ class Features():
         count = 0
 
         for leaf in self.html_object.body.traverse(include_text=True): 
-            text = leaf.text(deep=False, separator='', strip=True)
-            if leaf.tag in self.desired_tags and len(text) > 0:
+            node_text = leaf.text(deep=False, separator='', strip=True)
+          
+            if leaf.tag in self.desired_tags and len(node_text) > 0:
                 count += 1
 
-                node_text = node.text(deep=False, separator='', strip=True)
-                features.append(self.get_feature_leaf(leaf))
+                features.append(self.get_feature_leaf(leaf, node_text))
                 labels.append(self.check_label(node_text))
             
             if count >= self.n_negative_sample : 
                 break
-
+        
         return [features, labels]
 
     def check_label(self, node_text : str) -> bool:
@@ -59,11 +60,11 @@ class Features():
 
 
 
-    def get_feature_leaf(self, node_lxml_object) -> np.ndarray: 
-        present_nodes = self._get_present_tags(node_lxml_object)
-        lenght = self._extract_text_lengh(node_lxml_object)
-        depth = self._extract_depth(node_lxml_object)
-        word_count = self._extract_word_count(node_lxml_object)
+    def get_feature_leaf(self, node: object, node_text: str) -> np.ndarray: 
+        present_nodes = self._get_present_tags(node)
+        depth = self._extract_depth(node)
+        lenght = self._extract_text_lengh(node_text)
+        word_count = self._extract_word_count(node_text)
 
         return [lenght, depth, word_count]
 
@@ -95,7 +96,7 @@ class Features():
         
         return depth
 
-    def _extract_text_lengh(self, node: object) -> int:
+    def _extract_text_lengh(self, node_text: str) -> int:
 
         """Write a function to extract the text_lenght inside the lxml_object
         Args:
@@ -103,16 +104,15 @@ class Features():
         Returns:
             None
         """
-        return len(node.text(deep=False, separator='', strip=True))
+        return len(node_text)
 
 
 
-
-    def _extract_word_count(self, node: object) -> int:
+    def _extract_word_count(self, node_text: str) -> int:
         """Write a function to extract the text_lenght inside the lxml_object
         Args:
             node: Dictionary of line data for the coverage file.
         Returns:
             None
         """
-        return len(list(node.text(deep=False, separator='', strip=True).split()))
+        return len(list(node_text.split()))
