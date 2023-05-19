@@ -28,16 +28,17 @@ class Features():
             if leaf.tag in self.desired_tags and len(text) > 0:
                 count += 1
 
+                node_text = node.text(deep=False, separator='', strip=True)
                 features.append(self.get_feature_leaf(leaf))
-                labels.append(self.check_label(leaf))
+                labels.append(self.check_label(node_text))
             
             if count >= self.n_negative_sample : 
                 break
 
         return [features, labels]
 
-    def check_label(self, node : object) -> bool:
-        if self._is_description_node(node):
+    def check_label(self, node_text : str) -> bool:
+        if self._is_description_node(node_text):
             return 1
         else:
             return 0
@@ -53,8 +54,8 @@ class Features():
         return og_description
 
 
-    def _is_description_node(self, node):
-        return True if node.text(deep=False, separator='', strip=True) == self.og_desc_text else 0
+    def _is_description_node(self, node_text : str) -> bool:
+        return True if node_text == self.og_desc_text else False
 
 
 
@@ -79,7 +80,6 @@ class Features():
         return []
 
 
-
     def _extract_depth(self, node: object) -> int:
         """Write a function to extract the text_lenght inside the lxml_object
         Args:
@@ -87,11 +87,16 @@ class Features():
         Returns:
             None
         """
-        return 0
+        depth = 0
 
-
+        while(node.tag != 'body'):
+            depth+=1
+            node = node.parent
+        
+        return depth
 
     def _extract_text_lengh(self, node: object) -> int:
+
         """Write a function to extract the text_lenght inside the lxml_object
         Args:
             lxml_object: Dictionary of line data for the coverage file.
