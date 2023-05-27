@@ -99,7 +99,7 @@ events_sample = [
 for i, event in enumerate(events_sample):
     event['time'] = i
 # -----------------------------------------------
-
+'''
 #events_sample = events[:100]
 winners = {4: [], 5: []}
 for i, event in enumerate(events):
@@ -133,3 +133,4 @@ for user, acs in users_actions.items():
     if {14,7,13,6,9,11,25,43,}.issubset(acs):
         passed_users[user] = acs
 print(f"number users who has done all actions in first 4 levels at least once = {len(passed_users)}")
+'''
