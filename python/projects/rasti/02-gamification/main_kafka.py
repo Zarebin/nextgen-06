@@ -3,10 +3,39 @@ import json
 from main import *
 from kafka import KafkaConsumer, KafkaProducer
 from time import sleep
+import db
 
-user_instances = {}
 discarded_events = []
 winners = {4: [], 5: []}
+
+def is_action_valid(action, passed_levels):
+    return (passed_levels <  5) and (action in levels[passed_levels])
+
+def is_level_passed(user_actions, passed_levels):
+        for key, value in levels[passed_levels].items():
+            if key not in user_actions[-1] or user_actions[-1][key] < value:
+                return False
+        return True
+
+def check_new_action(user_actions, action, passed_levels):
+    if is_action_valid(action, passed_levels):
+        max_action_count = levels[passed_levels][action]
+        if action not in user_actions[-1]:
+           user_actions[-1][action] = 0
+        
+        if user_actions[-1][action] < max_action_count:
+            user_actions[-1][action] += 1
+            if is_level_passed(user_actions, passed_levels):
+                passed_levels += 1
+                user_actions.append(defaultdict(int))
+                message, is_valid = f"level {passed_levels} passed", True
+            else:
+                message, is_valid = "action accepted", True
+        else:
+            message, is_valid = "action discarded", False
+    else:
+        message, is_valid = "not valid", False
+    return message, user_actions, passed_levels, is_valid
 
 class Producer(threading.Thread):
     def __init__(self, data):
@@ -42,10 +71,20 @@ class Consumer(threading.Thread):
             data = message.value
             action = data['action_id']
             user = data['user']
-            if user not in user_instances:
-                user_instances[user] = User(user)
 
-            action_result = user_instances[user].check_new_action(action)
+            user_hist = db.get_user(user)
+            if not user_hist:
+                db.insert_user(user)
+                user_actions = [defaultdict(int)]
+                passed_levels = 0
+            else:
+                user_actions = user_hist[0]
+                passed_levels = user_hist[1]
+
+            action_result, user_actions, passed_levels, is_valid = check_new_action(user_actions, action, passed_levels)
+            if is_valid:
+                db.update_user(user, json.dumps(user_actions), passed_levels)
+
             if action_result == "level 4 passed":
                 winners[4].append(user)
             elif action_result == "level 5 passed":
@@ -67,4 +106,6 @@ def main():
     
 
 if __name__ == "__main__":
+    db.create_table()
     main()
+    db.get_db_len()
