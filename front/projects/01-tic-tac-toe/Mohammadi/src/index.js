@@ -95,8 +95,7 @@ const finishGame = (
   playBtn.addEventListener("click", initGame);
 };
 
-// Init Game Function
-
+// get size of border
 const getSize = () => {
   axios
     .get("http://localhost:3000/size")
@@ -115,7 +114,7 @@ const getSize = () => {
     })
     .catch((err) => console.log(err));
 };
-// http://reqres.in/api/users
+// Init Game Function
 const initGame = () => {
   lastClickedIsBlue = false;
   clickCounts = 0;
