@@ -1,0 +1,29 @@
+@mixin overall {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+
+@mixin bodyStyle($width, $height) {
+  width: $width;
+  height: $height;
+}
+@mixin displayStyle($dis, $dir, $align, $content) {
+  display: $dis;
+  flex-direction: $dir;
+  align-items: $align;
+  justify-content: $content;
+}
+@mixin textStyle($size, $color) {
+  font-size: $size;
+  color: $color;
+}
+@mixin afterStyle($bgc) {
+  content: " ";
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  border-radius: 100px;
+  background-color: $bgc;
+}
