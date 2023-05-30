@@ -1,5 +1,7 @@
 import axios from "axios";
 import "./css/style.scss";
+import '@components/board-row.js';
+import '@components/board-row-cell.js';
 
 let turn = "X";
 let active = true;
@@ -137,10 +139,10 @@ function setCellBorders(row,indexInRow, cellElement){
 }
 
 function createRow(row){
-    const rowElement = document.createElement("div");
+    const rowElement = document.createElement("board-row");
     rowElement.setAttribute("class", "board__row");
     for(let i = 0; i < boardSize; i++){
-        const cellElement = document.createElement("div");
+        const cellElement = document.createElement("board-row-cell");
         cellElement.setAttribute("class", "board__row__cell");
         cellElement.setAttribute("id", (boardSize * row + i).toString());
         setCellBorders(row, i, cellElement);
