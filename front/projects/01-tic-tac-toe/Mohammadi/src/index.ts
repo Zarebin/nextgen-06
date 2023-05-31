@@ -1,17 +1,17 @@
 import "./style/scss/style.scss";
 import axios from "axios";
 import "../src/web-component";
-const mask = document.querySelector(".mask");
-const container = document.querySelector(".container");
-const resetBtn = document.querySelector(".resetBtn");
+const mask:any = document.querySelector(".mask");
+const container:any = document.querySelector(".container");
+const resetBtn:any = document.querySelector(".resetBtn");
 //Game Data
-let clickCounts = 0;
-let lastClickedIsBlue = false;
+let clickCounts:number = 0;
+let lastClickedIsBlue:boolean = false;
 
 //on click Function
-const onClick = (e) => {
+const onClick = (e:any) => {
   let element = e.target;
-  let id = element.getAttribute("data-id");
+  let id= element.getAttribute("data-id");
 
   if (clickCounts === 9) {
     finishGame();
@@ -23,7 +23,7 @@ const onClick = (e) => {
     element.classList.add("blue");
   }
 
-  checkGameStatus(id);
+  checkGameStatus();
   clickCounts++;
   lastClickedIsBlue = !lastClickedIsBlue;
 };
@@ -32,10 +32,10 @@ const onClick = (e) => {
 const checkGameStatus = () => {
   if (clickCounts < 4) return;
 
-  let boxes = document.querySelectorAll(".container .box");
+  let boxes:any = document.querySelectorAll(".container .box");
   let currentColor = lastClickedIsBlue ? "red" : "blue";
-  let currentColorItems = [];
-  boxes.forEach((box) => {
+  let currentColorItems :number[]= [];
+  boxes.forEach((box:any) => {
     if (box.classList.contains(currentColor)) {
       currentColorItems.push(parseInt(box.getAttribute("data-id")));
     }
@@ -50,7 +50,7 @@ const checkGameStatus = () => {
 };
 
 //Check Win
-const isWinner = (winArray) => {
+const isWinner = (winArray:any) => {
   if (
     (winArray.includes(1) && winArray.includes(2) && winArray.includes(3)) ||
     (winArray.includes(4) && winArray.includes(5) && winArray.includes(6)) ||
@@ -104,7 +104,7 @@ const getSize = () => {
       let borderSize = res.data.borderSize;
       if (borderSize >= 2) {
         for (let index = 0; index < Math.pow(borderSize, 2); index++) {
-          let box = document.createElement("cell-component");
+          let box:any = document.createElement("cell-component");
           // box.className = "box";
 
           box.innerHTML = index + 1;
