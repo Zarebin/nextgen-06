@@ -1,0 +1,29 @@
+{
+  "name": "mohammadi",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "axios": "^1.4.0",
+    "css-loader": "^6.7.3",
+    "eslint": "^8.39.0",
+    "sass": "^1.62.1",
+    "sass-loader": "^13.2.2",
+    "ts-loader": "^9.4.3",
+    "typescript": "^5.0.4",
+    "webpack": "^5.82.0",
+    "webpack-cli": "^5.0.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "style-loader": "^3.3.2",
+    "typescript": "5.0.4"
+  },
+  "description": ""
+}
